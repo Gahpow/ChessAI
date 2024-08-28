@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
-[ExecuteInEditMode]
 public class Board : MonoBehaviour
 {
     [SerializeField] Color colorLight, colorDark;
 
-    private MeshRenderer[,] squareRenderer;
+    public MeshRenderer[,] squareRenderer;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +22,10 @@ public class Board : MonoBehaviour
 
     void OnValidate()
     {
-        UpdateColours();
+        if (squareRenderer != null)
+        {
+            UpdateColours();
+        }
     }
 
     void CreateBoard()
@@ -39,7 +40,7 @@ public class Board : MonoBehaviour
                 // Create square
                 Transform square = GameObject.CreatePrimitive(PrimitiveType.Quad).transform;
                 square.parent = transform;
-                square.name = $"Square {rank} {file}";
+                square.name = $"Square {rank + 1} {file + 1}";
                 square.position = new Vector2(-3.5f + file, -3.5f + rank);
                 Material squareMaterial = new Material(squareShader);
 
@@ -63,7 +64,7 @@ public class Board : MonoBehaviour
             {
                 if (squareRenderer[file, rank] != null)
                 {
-                    Material squareMaterial = squareRenderer[file, rank].material;
+                    Material squareMaterial = squareRenderer[file, rank].sharedMaterial;
                     bool isLightSquare = (file + rank) % 2 != 0;
                     squareMaterial.color = isLightSquare ? colorDark : colorLight;
                 }
